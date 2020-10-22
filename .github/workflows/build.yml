@@ -23,3 +23,6 @@ jobs:
 
     - name: Build JavaFX with Maven
       run: xvfb-run mvn -B package --file pom.xml
+
+    - name: Generate JavaDoc
+      run: mvn javadoc:javadoc
