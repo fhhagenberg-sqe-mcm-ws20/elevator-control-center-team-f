@@ -1,4 +1,4 @@
-package at.fhhagenberg.sqe;
+package at.fhhagenberg.sqe.mo;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

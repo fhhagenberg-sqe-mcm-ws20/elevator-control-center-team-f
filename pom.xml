@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>at.fhhagenberg.sqe</groupId>
-    <artifactId>javafx-base</artifactId>
+    <groupId>at.fhhagenberg.sqe.mo</groupId>
+    <artifactId>mo-elevator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
@@ -64,7 +64,7 @@
                 <version>0.0.3</version>
                 <configuration>
                     <launcher>launcher</launcher>
-                    <mainClass>at.fhhagenberg.sqe.App</mainClass>
+                    <mainClass>at.fhhagenberg.sqe.mo.App</mainClass>
                 </configuration>
             </plugin>
         </plugins>
