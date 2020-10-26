@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Simulation {
 
-  private IElevator elevatorApi;
+  private final IElevator elevatorApi;
   private Building building;
 
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -22,23 +22,24 @@ public class Simulation {
     return building;
   }
 
-  public Simulation(IElevator elevatorApi) {
+  public Simulation(IElevator elevatorApi) throws Exception {
     this.elevatorApi = elevatorApi;
+    pollElevatorApi();
     schedulePolling();
   }
 
   private void schedulePolling() {
     scheduler.scheduleAtFixedRate(
-            () -> {
-              try {
-                pollElevatorApi();
-              } catch (Exception e) {
-                e.printStackTrace();
-              }
-            },
-            5,
-            5,
-            TimeUnit.SECONDS);
+        () -> {
+          try {
+            pollElevatorApi();
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        },
+        5,
+        5,
+        TimeUnit.SECONDS);
   }
 
   private void pollElevatorApi() throws Exception {
@@ -64,11 +65,11 @@ public class Simulation {
     int floorHeight = elevatorApi.getFloorHeight();
     for (int floorId = 0; floorId < numberOfFloors; floorId++) {
       floorsBuilder.add(
-              new Floor(
-                      floorId,
-                      elevatorApi.getFloorButtonDown(floorId),
-                      elevatorApi.getFloorButtonUp(floorId),
-                      floorHeight));
+          new Floor(
+              floorId,
+              elevatorApi.getFloorButtonDown(floorId),
+              elevatorApi.getFloorButtonUp(floorId),
+              floorHeight));
     }
     return floorsBuilder.build();
   }
@@ -84,19 +85,19 @@ public class Simulation {
         servicedFloors.put(floorId, elevatorApi.getServicesFloors(elevatorId, floorId));
       }
       elevatorsBuilder.add(
-              new Elevator(
-                      elevatorId,
-                      elevatorApi.getCommittedDirection(elevatorId),
-                      elevatorApi.getElevatorAccel(elevatorId),
-                      buttons,
-                      elevatorApi.getElevatorCapacity(elevatorId),
-                      elevatorApi.getElevatorDoorStatus(elevatorId),
-                      elevatorApi.getElevatorFloor(elevatorId),
-                      elevatorApi.getElevatorPosition(elevatorId),
-                      elevatorApi.getElevatorSpeed(elevatorId),
-                      elevatorApi.getElevatorWeight(elevatorId),
-                      servicedFloors,
-                      elevatorApi.getTarget(elevatorId)));
+          new Elevator(
+              elevatorId,
+              elevatorApi.getCommittedDirection(elevatorId),
+              elevatorApi.getElevatorAccel(elevatorId),
+              buttons,
+              elevatorApi.getElevatorCapacity(elevatorId),
+              elevatorApi.getElevatorDoorStatus(elevatorId),
+              elevatorApi.getElevatorFloor(elevatorId),
+              elevatorApi.getElevatorPosition(elevatorId),
+              elevatorApi.getElevatorSpeed(elevatorId),
+              elevatorApi.getElevatorWeight(elevatorId),
+              servicedFloors,
+              elevatorApi.getTarget(elevatorId)));
     }
     return elevatorsBuilder.build();
   }
