@@ -8,9 +8,12 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 import sqelevator.IElevator;
 
 public class ElevatorControlCenter {
+
+  private static final Logger LOGGER = Logger.getLogger(ElevatorControlCenter.class.getName());
 
   private final IElevator elevatorApi;
   private Building building;
@@ -35,9 +38,9 @@ public class ElevatorControlCenter {
           try {
             pollElevatorApi();
           } catch (RemoteException detail) {
-            detail.printStackTrace();
+            LOGGER.severe(detail.getMessage());
           } catch (DesynchronizationException detail) {
-            System.out.println(detail.getMessage());
+            LOGGER.warning(detail.getMessage());
           }
         },
         5,
