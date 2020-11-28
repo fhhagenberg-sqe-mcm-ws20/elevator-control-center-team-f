@@ -1,8 +1,6 @@
 package at.fhhagenberg.sqe.mo;
 
 import com.google.common.collect.ImmutableList;
-import sqelevator.IElevator;
-
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import sqelevator.IElevator;
 
 public class ElevatorControlCenter {
 
@@ -22,25 +21,28 @@ public class ElevatorControlCenter {
     return building;
   }
 
-  public ElevatorControlCenter(IElevator elevatorApi) throws Exception {
+  public void setBuilding(Building building) {
+    this.building = building;
+  }
+
+  public ElevatorControlCenter(IElevator elevatorApi) {
     this.elevatorApi = elevatorApi;
-    pollElevatorApi();
   }
 
   public void startPolling() {
     scheduler.scheduleAtFixedRate(
-            () -> {
-              try {
-                pollElevatorApi();
-              } catch (RemoteException detail) {
-                detail.printStackTrace();
-              } catch (DesynchronizationException detail) {
-                System.out.println(detail.getMessage());
-              }
-            },
-            5,
-            5,
-            TimeUnit.SECONDS);
+        () -> {
+          try {
+            pollElevatorApi();
+          } catch (RemoteException detail) {
+            detail.printStackTrace();
+          } catch (DesynchronizationException detail) {
+            System.out.println(detail.getMessage());
+          }
+        },
+        5,
+        5,
+        TimeUnit.SECONDS);
   }
 
   public void stopPolling() {
@@ -62,7 +64,7 @@ public class ElevatorControlCenter {
       }
     } else {
       throw new DesynchronizationException(
-              "Discarding results due to desynchronization of clock tick...");
+          "Discarding results due to desynchronization of clock tick...");
     }
   }
 
@@ -71,11 +73,10 @@ public class ElevatorControlCenter {
     int floorHeight = elevatorApi.getFloorHeight();
     for (int floorId = 0; floorId < numberOfFloors; floorId++) {
       floorsBuilder.add(
-              new Floor(
-                      floorId,
-                      elevatorApi.getFloorButtonDown(floorId),
-                      elevatorApi.getFloorButtonUp(floorId),
-                      floorHeight));
+          new Floor(
+              elevatorApi.getFloorButtonDown(floorId),
+              elevatorApi.getFloorButtonUp(floorId),
+              floorHeight));
     }
     return floorsBuilder.build();
   }
@@ -91,17 +92,16 @@ public class ElevatorControlCenter {
         servicedFloors.put(floorId, elevatorApi.getServicesFloors(elevatorId, floorId));
       }
       elevatorsBuilder.add(
-              new Elevator(
-                      elevatorId,
-                      elevatorApi.getCommittedDirection(elevatorId),
-                      elevatorApi.getElevatorAccel(elevatorId),
-                      buttons,
-                      elevatorApi.getElevatorCapacity(elevatorId),
-                      elevatorApi.getElevatorDoorStatus(elevatorId),
-                      elevatorApi.getElevatorFloor(elevatorId),
-                      elevatorApi.getElevatorPosition(elevatorId),
-                      elevatorApi.getElevatorSpeed(elevatorId),
-                      elevatorApi.getElevatorWeight(elevatorId),
+          new Elevator(
+              elevatorApi.getCommittedDirection(elevatorId),
+              elevatorApi.getElevatorAccel(elevatorId),
+              buttons,
+              elevatorApi.getElevatorCapacity(elevatorId),
+              elevatorApi.getElevatorDoorStatus(elevatorId),
+              elevatorApi.getElevatorFloor(elevatorId),
+              elevatorApi.getElevatorPosition(elevatorId),
+              elevatorApi.getElevatorSpeed(elevatorId),
+              elevatorApi.getElevatorWeight(elevatorId),
               servicedFloors,
               elevatorApi.getTarget(elevatorId)));
     }
