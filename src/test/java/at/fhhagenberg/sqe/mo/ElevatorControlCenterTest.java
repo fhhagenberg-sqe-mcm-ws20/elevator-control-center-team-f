@@ -8,16 +8,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class SimulationTest {
+public class ElevatorControlCenterTest {
 
   @Test
   void testNumberOfFloors() throws Exception {
     IElevator elevatorApi = mock(IElevator.class);
     when(elevatorApi.getFloorNum()).thenReturn(3);
 
-    Simulation simulation = new Simulation(elevatorApi);
+    ElevatorControlCenter elevatorControlCenter = new ElevatorControlCenter(elevatorApi);
+    elevatorControlCenter.pollElevatorApi();
 
-    assertEquals(3, simulation.getBuilding().getFloors().size());
+    assertEquals(3, elevatorControlCenter.getBuilding().getFloors().size());
   }
 
   @Test
@@ -25,9 +26,9 @@ public class SimulationTest {
     IElevator elevatorApi = mock(IElevator.class);
     when(elevatorApi.getElevatorNum()).thenReturn(3);
 
-    Simulation simulation = new Simulation(elevatorApi);
+    ElevatorControlCenter elevatorControlCenter = new ElevatorControlCenter(elevatorApi);
 
-    assertEquals(3, simulation.getBuilding().getElevators().size());
+    assertEquals(3, elevatorControlCenter.getBuilding().getElevators().size());
   }
 
   @Test
@@ -36,15 +37,10 @@ public class SimulationTest {
     when(elevatorApi.getElevatorNum()).thenReturn(3);
     when(elevatorApi.getCommittedDirection(1)).thenReturn(5);
 
-    Simulation simulation = new Simulation(elevatorApi);
+    ElevatorControlCenter elevatorControlCenter = new ElevatorControlCenter(elevatorApi);
 
     assertEquals(
-        5,
-        simulation.getBuilding().getElevators().stream()
-            .filter(elevator -> elevator.getId() == 1)
-            .map(Elevator::getCommittedDirection)
-            .findFirst()
-            .orElse(-1));
+            5, elevatorControlCenter.getBuilding().getElevators().get(1).getCommittedDirection());
   }
 
   @Test
@@ -53,15 +49,9 @@ public class SimulationTest {
     when(elevatorApi.getElevatorNum()).thenReturn(3);
     when(elevatorApi.getElevatorDoorStatus(2)).thenReturn(2);
 
-    Simulation simulation = new Simulation(elevatorApi);
+    ElevatorControlCenter elevatorControlCenter = new ElevatorControlCenter(elevatorApi);
 
-    assertEquals(
-        2,
-        simulation.getBuilding().getElevators().stream()
-            .filter(elevator -> elevator.getId() == 2)
-            .map(Elevator::getDoorStatus)
-            .findFirst()
-            .orElse(-1));
+    assertEquals(2, elevatorControlCenter.getBuilding().getElevators().get(2).getDoorStatus());
   }
 
   @Test
@@ -70,13 +60,8 @@ public class SimulationTest {
     when(elevatorApi.getFloorNum()).thenReturn(3);
     when(elevatorApi.getFloorButtonUp(2)).thenReturn(true);
 
-    Simulation simulation = new Simulation(elevatorApi);
+    ElevatorControlCenter elevatorControlCenter = new ElevatorControlCenter(elevatorApi);
 
-    assertTrue(
-        simulation.getBuilding().getFloors().stream()
-            .filter(floor -> floor.getId() == 2)
-            .map(Floor::isButtonUp)
-            .findFirst()
-            .orElse(false));
+    assertTrue(elevatorControlCenter.getBuilding().getFloors().get(2).isButtonUp());
   }
 }

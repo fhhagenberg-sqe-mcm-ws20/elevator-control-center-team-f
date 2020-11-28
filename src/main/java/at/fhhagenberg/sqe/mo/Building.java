@@ -1,30 +1,30 @@
 package at.fhhagenberg.sqe.mo;
 
-import java.util.Set;
+import java.util.List;
 
 public class Building {
 
-  private Set<Floor> floors;
-  private Set<Elevator> elevators;
+  private List<Floor> floors;
+  private List<Elevator> elevators;
 
-  public Building(Set<Floor> floors, Set<Elevator> elevators) {
+  public Building(List<Floor> floors, List<Elevator> elevators) {
     this.floors = floors;
     this.elevators = elevators;
   }
 
-  public Set<Floor> getFloors() {
+  public List<Floor> getFloors() {
     return floors;
   }
 
-  public void setFloors(Set<Floor> floors) {
+  public void setFloors(List<Floor> floors) {
     this.floors = floors;
   }
 
-  public Set<Elevator> getElevators() {
+  public List<Elevator> getElevators() {
     return elevators;
   }
 
-  public void setElevators(Set<Elevator> elevators) {
+  public void setElevators(List<Elevator> elevators) {
     this.elevators = elevators;
   }
 }
