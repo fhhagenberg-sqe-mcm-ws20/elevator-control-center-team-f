@@ -1,37 +1,34 @@
 package at.fhhagenberg.sqe.mo;
 
-import java.util.Map;
+import java.util.Set;
 
 public class Elevator {
 
-  private int committedDirection;
-  private int acceleration;
-  private Map<Integer, Boolean> buttons;
-  private int capacity;
-  private int doorStatus;
-  private int floor;
-  private int position;
-  private int speed;
-  private int weight;
-  private Map<Integer, Boolean> servicedFloors;
-  private int target;
+  private final int committedDirection;
+  private final int acceleration;
+  private final int capacity;
+  private final int doorStatus;
+  private final int floor;
+  private final int position;
+  private final int speed;
+  private final int weight;
+  private final Set<Integer> servicedFloors;
+  private final int target;
 
   public Elevator(
       int committedDirection,
       int acceleration,
-      Map<Integer, Boolean> buttons,
       int capacity,
       int doorStatus,
       int floor,
       int position,
       int speed,
       int weight,
-      Map<Integer, Boolean> servicedFloors,
+      Set<Integer> servicedFloors,
       int target) {
 
     this.committedDirection = committedDirection;
     this.acceleration = acceleration;
-    this.buttons = buttons;
     this.capacity = capacity;
     this.doorStatus = doorStatus;
     this.floor = floor;
@@ -48,10 +45,6 @@ public class Elevator {
 
   public int getAcceleration() {
     return acceleration;
-  }
-
-  public Map<Integer, Boolean> getButtons() {
-    return buttons;
   }
 
   public int getCapacity() {
@@ -78,7 +71,7 @@ public class Elevator {
     return weight;
   }
 
-  public Map<Integer, Boolean> getServicedFloors() {
+  public Set<Integer> getServicedFloors() {
     return servicedFloors;
   }
 

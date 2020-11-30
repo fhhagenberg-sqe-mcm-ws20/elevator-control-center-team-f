@@ -1,36 +1,60 @@
 package at.fhhagenberg.sqe.mo;
 
+import at.fhhagenberg.sqe.mo.gui.ElevatorsView;
+import at.fhhagenberg.sqe.mo.gui.FloorsView;
+import java.rmi.RemoteException;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-/**
- * JavaFX App
- */
+/** JavaFX App */
 public class App extends Application {
 
-    @Override
-    public void start(Stage stage) {
-        var javaVersion = "13";
-        var javafxVersion = "13";
+  @Override
+  public void start(Stage stage) throws RemoteException {
+    BorderPane root = new BorderPane();
+    root.setCenter(initMainElements());
 
-        var label = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-        var layout = new BorderPane(label);
-        var button = new Button("Click me!");
-        button.setOnAction(evt -> button.setText("Clicked!"));
-        layout.setBottom(button);
+    stage.setTitle("Elevator Control Center");
+    stage.setScene(new Scene(root, 800, 500));
+    stage.setOnCloseRequest(event -> System.exit(0));
+    stage.show();
+  }
 
-        var scene = new Scene(layout, 640, 480);
+  private VBox initMainElements() throws RemoteException {
+    ElevatorControlCenter ecc = new ElevatorControlCenter();
+    ecc.initDemoBuilding();
+    ElevatorsView elevatorsView = new ElevatorsView(ecc);
+    FloorsView floorsView = new FloorsView(ecc);
 
-        stage.setScene(scene);
-        stage.show();
-    }
+    VBox vBox = new VBox(initModeSelectionElements(), elevatorsView, floorsView);
+    vBox.setPadding(new Insets(16));
+    vBox.setSpacing(64);
+    return vBox;
+  }
 
-    public static void main(String[] args) {
-        launch();
-    }
+  private HBox initModeSelectionElements() {
+    Label modeLabel = new Label("Mode: ");
+    RadioButton manualModeRadioButton = new RadioButton("Manual");
+    RadioButton autoModeRadioButton = new RadioButton("Auto");
+    ToggleGroup modeToggleGroup = new ToggleGroup();
+    manualModeRadioButton.setSelected(true);
+    manualModeRadioButton.setToggleGroup(modeToggleGroup);
+    autoModeRadioButton.setToggleGroup(modeToggleGroup);
 
+    VBox modeSelectionVBox = new VBox(manualModeRadioButton, autoModeRadioButton);
+    modeSelectionVBox.setSpacing(8);
+    return new HBox(modeLabel, modeSelectionVBox);
+  }
+
+  public static void main(String[] args) {
+    launch();
+  }
 }
