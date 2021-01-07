@@ -26,7 +26,7 @@ public class ElevatorsView extends BorderPane {
   private void initView() throws RemoteException {
     int numberOfElevators = elevatorControlCenter.getBuilding().getElevators().size();
     hBox = new HBox(numberOfElevators);
-    hBox.setSpacing(128);
+    hBox.setSpacing(64);
     hBox.setAlignment(Pos.CENTER);
     for (int elevatorId = 0; elevatorId < numberOfElevators; elevatorId++) {
       initElevator(elevatorControlCenter.getBuilding().getElevators().get(elevatorId));
@@ -89,7 +89,7 @@ public class ElevatorsView extends BorderPane {
             currentFloorAndDirectionHBox,
             elevatorButtonsGridPane);
     elevatorInfoVBox.setSpacing(8);
-
+    elevatorInfoVBox.setStyle("-fx-border-color: lightgrey; -fx-padding: 16");
     hBox.getChildren().add(elevatorInfoVBox);
   }
 

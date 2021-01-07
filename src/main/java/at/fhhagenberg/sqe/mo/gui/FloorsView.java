@@ -8,7 +8,6 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
@@ -26,9 +25,6 @@ public class FloorsView extends BorderPane {
   }
 
   private void initView() throws RemoteException {
-    // Floor label
-    Label floorLabel = new Label("Floor: ");
-
     // Floors
     List<String> floors = new ArrayList<>();
     int numberOfFloors = elevatorControlCenter.getBuilding().getFloors().size();
@@ -52,7 +48,7 @@ public class FloorsView extends BorderPane {
     floorUpButton = new Button("⬆️");
     floorDownButton = new Button("⬇️");
 
-    HBox hBox = new HBox(floorLabel, floorsComboBox, floorUpButton, floorDownButton);
+    HBox hBox = new HBox(floorsComboBox, floorUpButton, floorDownButton);
     this.setCenter(hBox);
   }
 
