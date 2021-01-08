@@ -4,7 +4,7 @@ public class Floor {
 
   private boolean buttonDown;
   private boolean buttonUp;
-  private int height;
+  private final int height;
 
   public Floor(boolean buttonDown, boolean buttonUp, int height) {
     this.buttonDown = buttonDown;
@@ -22,5 +22,13 @@ public class Floor {
 
   public int getHeight() {
     return height;
+  }
+
+  public void setDownButton(boolean buttonDown) {
+    this.buttonDown = buttonDown;
+  }
+
+  public void setUpButton(boolean buttonUp) {
+    this.buttonUp = buttonUp;
   }
 }

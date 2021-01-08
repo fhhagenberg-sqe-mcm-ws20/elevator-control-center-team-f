@@ -1,16 +1,15 @@
 package at.fhhagenberg.sqe.mo;
 
-import at.fhhagenberg.sqe.mo.gui.ElevatorsView;
-import at.fhhagenberg.sqe.mo.gui.FloorsView;
+import at.fhhagenberg.sqe.mo.viewcontroller.BuildingViewController;
+import at.fhhagenberg.sqe.mo.viewcontroller.ElevatorsViewController;
+import at.fhhagenberg.sqe.mo.viewcontroller.FloorsViewController;
+import at.fhhagenberg.sqe.mo.view.BuildingView;
+import at.fhhagenberg.sqe.mo.view.ElevatorsView;
+import at.fhhagenberg.sqe.mo.view.FloorsView;
 import java.rmi.RemoteException;
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -18,7 +17,7 @@ import javafx.stage.Stage;
 public class App extends Application {
 
   @Override
-  public void start(Stage stage) throws RemoteException {
+  public void start(Stage stage) throws DesynchronizationException, RemoteException {
     BorderPane root = new BorderPane();
     root.setCenter(initMainElements());
 
@@ -28,30 +27,28 @@ public class App extends Application {
     stage.show();
   }
 
-  private VBox initMainElements() throws RemoteException {
-    ElevatorControlCenter ecc = new ElevatorControlCenter();
-    ecc.initDemoBuilding();
-    ElevatorsView elevatorsView = new ElevatorsView(ecc);
-    FloorsView floorsView = new FloorsView(ecc);
+  private VBox initMainElements() throws DesynchronizationException, RemoteException {
+    BuildingSimulation elevatorApiSimulation = new BuildingSimulation();
+    ElevatorControlCenter ecc = new ElevatorControlCenter(elevatorApiSimulation);
+    ecc.pollElevatorApi();
 
-    VBox vBox = new VBox(initModeSelectionElements(), elevatorsView, floorsView);
-    vBox.setPadding(new Insets(16));
-    vBox.setSpacing(64);
-    return vBox;
-  }
+    BuildingViewController buildingViewController = new BuildingViewController(ecc.getBuilding());
 
-  private HBox initModeSelectionElements() {
-    Label modeLabel = new Label("Mode: ");
-    RadioButton manualModeRadioButton = new RadioButton("Manual");
-    RadioButton autoModeRadioButton = new RadioButton("Auto");
-    ToggleGroup modeToggleGroup = new ToggleGroup();
-    manualModeRadioButton.setSelected(true);
-    manualModeRadioButton.setToggleGroup(modeToggleGroup);
-    autoModeRadioButton.setToggleGroup(modeToggleGroup);
+    ElevatorsViewController elevatorsViewController =
+        new ElevatorsViewController(
+            buildingViewController, buildingViewController.getBuilding().getElevators());
+    ElevatorsView elevatorsView = new ElevatorsView(elevatorsViewController);
+    ecc.getBuilding().addObserver(elevatorsView);
 
-    VBox modeSelectionVBox = new VBox(manualModeRadioButton, autoModeRadioButton);
-    modeSelectionVBox.setSpacing(8);
-    return new HBox(modeLabel, modeSelectionVBox);
+    FloorsViewController floorsViewController =
+        new FloorsViewController(
+            buildingViewController, buildingViewController.getBuilding().getFloors());
+    FloorsView floorsView = new FloorsView(floorsViewController);
+    ecc.getBuilding().addObserver(floorsView);
+
+    BuildingView buildingView = new BuildingView(buildingViewController, elevatorsView, floorsView);
+    ecc.getBuilding().addObserver(buildingView);
+    return buildingView;
   }
 
   public static void main(String[] args) {

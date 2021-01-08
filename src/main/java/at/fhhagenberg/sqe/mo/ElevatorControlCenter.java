@@ -5,10 +5,9 @@ import at.fhhagenberg.sqe.mo.model.Elevator;
 import at.fhhagenberg.sqe.mo.model.Floor;
 import com.google.common.collect.ImmutableList;
 import java.rmi.RemoteException;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -19,83 +18,17 @@ public class ElevatorControlCenter {
 
   private static final Logger LOGGER = Logger.getLogger(ElevatorControlCenter.class.getName());
 
-  private final IElevator elevatorApi;
+  private IElevator elevatorApi = null;
   private Building building;
 
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
+  private ElevatorControlCenter() {
+    // no-op empty constructor
+  }
+
   public ElevatorControlCenter(IElevator elevatorApi) {
     this.elevatorApi = elevatorApi;
-  }
-
-  public ElevatorControlCenter() {
-    elevatorApi = null;
-  }
-
-  public void initDemoBuilding() {
-    Random random = new Random();
-    int floorHeight = 5;
-    ImmutableList<Floor> floors =
-        ImmutableList.of(
-            new Floor(random.nextBoolean(), random.nextBoolean(), floorHeight),
-            new Floor(random.nextBoolean(), random.nextBoolean(), floorHeight),
-            new Floor(random.nextBoolean(), random.nextBoolean(), floorHeight),
-            new Floor(random.nextBoolean(), random.nextBoolean(), floorHeight),
-            new Floor(random.nextBoolean(), random.nextBoolean(), floorHeight),
-            new Floor(random.nextBoolean(), random.nextBoolean(), floorHeight));
-    ImmutableList<Elevator> elevators =
-        ImmutableList.of(
-            new Elevator(
-                random.nextInt(3),
-                random.nextInt(6),
-                random.nextInt(9) + 2,
-                random.nextInt(2) + 1,
-                0,
-                0,
-                random.nextInt(11),
-                random.nextInt(11) * 80,
-                randomServicedFloors(floors),
-                randomFloor(floors)),
-            new Elevator(
-                random.nextInt(3),
-                random.nextInt(6),
-                random.nextInt(9) + 2,
-                random.nextInt(2) + 1,
-                0,
-                0,
-                random.nextInt(11),
-                random.nextInt(11) * 80,
-                randomServicedFloors(floors),
-                randomFloor(floors)),
-            new Elevator(
-                random.nextInt(3),
-                random.nextInt(6),
-                random.nextInt(9) + 2,
-                random.nextInt(2) + 1,
-                0,
-                0,
-                random.nextInt(11),
-                random.nextInt(11) * 80,
-                randomServicedFloors(floors),
-                randomFloor(floors)));
-
-    building = new Building(floors, elevators);
-  }
-
-  private Set<Integer> randomServicedFloors(ImmutableList<Floor> floors) {
-    Set<Integer> servicedFloors = new HashSet<>();
-    for (int floor = 0; floor < floors.size(); floor++) {
-      servicedFloors.add(floor);
-    }
-    Random random = new Random();
-    if (random.nextBoolean()) {
-      servicedFloors.remove(random.nextInt(floors.size()));
-    }
-    return servicedFloors;
-  }
-
-  private int randomFloor(ImmutableList<Floor> floors) {
-    return new Random().nextInt(floors.size());
   }
 
   public Building getBuilding() {
@@ -136,8 +69,7 @@ public class ElevatorControlCenter {
       if (building == null) {
         building = new Building(floors, elevators);
       } else {
-        building.setFloors(floors);
-        building.setElevators(elevators);
+        building.update(floors, elevators);
       }
     } else {
       throw new DesynchronizationException(
@@ -162,12 +94,21 @@ public class ElevatorControlCenter {
     ImmutableList.Builder<Elevator> elevatorsBuilder = ImmutableList.builder();
     int numberOfElevators = elevatorApi.getElevatorNum();
     for (int elevatorId = 0; elevatorId < numberOfElevators; elevatorId++) {
-      Set<Integer> servicedFloors = new HashSet<>();
+      Map<Integer, Boolean> buttons = new HashMap<>();
+      Map<Integer, Boolean> servicedFloors = new HashMap<>();
       for (int floorId = 0; floorId < numberOfFloors; floorId++) {
         if (elevatorApi.getElevatorButton(elevatorId, floorId)) {
-          servicedFloors.add(floorId);
+          buttons.put(floorId, true);
+        } else {
+          buttons.put(floorId, false);
+        }
+        if (elevatorApi.getServicesFloors(elevatorId, floorId)) {
+          servicedFloors.put(floorId, true);
+        } else {
+          servicedFloors.put(floorId, false);
         }
       }
+
       elevatorsBuilder.add(
           new Elevator(
               elevatorApi.getCommittedDirection(elevatorId),
@@ -178,6 +119,7 @@ public class ElevatorControlCenter {
               elevatorApi.getElevatorPosition(elevatorId),
               elevatorApi.getElevatorSpeed(elevatorId),
               elevatorApi.getElevatorWeight(elevatorId),
+              buttons,
               servicedFloors,
               elevatorApi.getTarget(elevatorId)));
     }

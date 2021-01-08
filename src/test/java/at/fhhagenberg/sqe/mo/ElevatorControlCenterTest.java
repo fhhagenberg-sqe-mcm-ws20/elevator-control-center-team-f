@@ -11,7 +11,7 @@ import at.fhhagenberg.sqe.mo.model.Building;
 import at.fhhagenberg.sqe.mo.model.Elevator;
 import at.fhhagenberg.sqe.mo.model.Floor;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableMap;
 import java.rmi.RemoteException;
 import org.junit.jupiter.api.Test;
 import sqelevator.IElevator;
@@ -196,9 +196,9 @@ public class ElevatorControlCenterTest {
             new Floor(false, false, 0), new Floor(true, false, 1), new Floor(false, true, 2));
     ImmutableList<Elevator> elevators =
         ImmutableList.of(
-            new Elevator(0, 0, 100, 0, 0, 0, 0, 0, ImmutableSet.of(), 0),
-            new Elevator(0, 0, 100, 0, 0, 0, 0, 0, ImmutableSet.of(), 0),
-            new Elevator(0, 0, 100, 0, 0, 0, 0, 0, ImmutableSet.of(), 0));
+            new Elevator(0, 0, 100, 0, 0, 0, 0, 0, ImmutableMap.of(), ImmutableMap.of(), 0),
+            new Elevator(0, 0, 100, 0, 0, 0, 0, 0, ImmutableMap.of(), ImmutableMap.of(), 0),
+            new Elevator(0, 0, 100, 0, 0, 0, 0, 0, ImmutableMap.of(), ImmutableMap.of(), 0));
 
     Building building = new Building(floors, elevators);
 

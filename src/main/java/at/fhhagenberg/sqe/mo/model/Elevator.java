@@ -1,10 +1,9 @@
 package at.fhhagenberg.sqe.mo.model;
 
-import java.util.Set;
+import java.util.Map;
 
 public class Elevator {
 
-  private final int committedDirection;
   private final int acceleration;
   private final int capacity;
   private final int doorStatus;
@@ -12,8 +11,10 @@ public class Elevator {
   private final int position;
   private final int speed;
   private final int weight;
-  private final Set<Integer> servicedFloors;
-  private final int target;
+  private final Map<Integer, Boolean> buttons;
+  private final Map<Integer, Boolean> servicedFloors;
+  private int committedDirection;
+  private int target;
 
   public Elevator(
       int committedDirection,
@@ -24,7 +25,8 @@ public class Elevator {
       int position,
       int speed,
       int weight,
-      Set<Integer> servicedFloors,
+      Map<Integer, Boolean> buttons,
+      Map<Integer, Boolean> servicedFloors,
       int target) {
 
     this.committedDirection = committedDirection;
@@ -35,6 +37,7 @@ public class Elevator {
     this.position = position;
     this.speed = speed;
     this.weight = weight;
+    this.buttons = buttons;
     this.servicedFloors = servicedFloors;
     this.target = target;
   }
@@ -71,11 +74,28 @@ public class Elevator {
     return weight;
   }
 
-  public Set<Integer> getServicedFloors() {
+  public Map<Integer, Boolean> getButtons() {
+    return buttons;
+  }
+
+  public Map<Integer, Boolean> getServicedFloors() {
     return servicedFloors;
   }
 
   public int getTarget() {
     return target;
+  }
+
+  public void setCommittedDirection(int committedDirection) {
+    this.committedDirection = committedDirection;
+  }
+
+  public void setServicesFloors(int floor, boolean service) {
+    servicedFloors.put(floor, service);
+  }
+
+  public void setTarget(int target) {
+    this.target = target;
+    buttons.put(target, true);
   }
 }
