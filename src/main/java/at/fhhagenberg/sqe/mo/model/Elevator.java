@@ -1,4 +1,4 @@
-package at.fhhagenberg.sqe.mo;
+package at.fhhagenberg.sqe.mo.model;
 
 import java.util.Set;
 

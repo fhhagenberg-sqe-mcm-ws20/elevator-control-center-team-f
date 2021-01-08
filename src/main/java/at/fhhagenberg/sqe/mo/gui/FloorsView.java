@@ -1,7 +1,7 @@
 package at.fhhagenberg.sqe.mo.gui;
 
 import at.fhhagenberg.sqe.mo.ElevatorControlCenter;
-import at.fhhagenberg.sqe.mo.Floor;
+import at.fhhagenberg.sqe.mo.model.Floor;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;

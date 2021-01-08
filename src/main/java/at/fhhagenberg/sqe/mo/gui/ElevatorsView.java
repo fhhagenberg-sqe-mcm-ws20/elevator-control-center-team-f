@@ -1,7 +1,7 @@
 package at.fhhagenberg.sqe.mo.gui;
 
-import at.fhhagenberg.sqe.mo.Elevator;
 import at.fhhagenberg.sqe.mo.ElevatorControlCenter;
+import at.fhhagenberg.sqe.mo.model.Elevator;
 import java.rmi.RemoteException;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

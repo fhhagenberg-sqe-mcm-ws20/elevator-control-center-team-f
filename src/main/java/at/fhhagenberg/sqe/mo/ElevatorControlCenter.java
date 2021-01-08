@@ -1,5 +1,8 @@
 package at.fhhagenberg.sqe.mo;
 
+import at.fhhagenberg.sqe.mo.model.Building;
+import at.fhhagenberg.sqe.mo.model.Elevator;
+import at.fhhagenberg.sqe.mo.model.Floor;
 import com.google.common.collect.ImmutableList;
 import java.rmi.RemoteException;
 import java.util.HashSet;

@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import at.fhhagenberg.sqe.mo.model.Building;
+import at.fhhagenberg.sqe.mo.model.Elevator;
+import at.fhhagenberg.sqe.mo.model.Floor;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.rmi.RemoteException;

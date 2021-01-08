@@ -1,4 +1,4 @@
-package at.fhhagenberg.sqe.mo;
+package at.fhhagenberg.sqe.mo.model;
 
 public class Floor {
 
