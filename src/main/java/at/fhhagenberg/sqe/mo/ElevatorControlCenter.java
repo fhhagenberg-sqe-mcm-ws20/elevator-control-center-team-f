@@ -3,25 +3,24 @@ package at.fhhagenberg.sqe.mo;
 import at.fhhagenberg.sqe.mo.model.Building;
 import at.fhhagenberg.sqe.mo.model.Elevator;
 import at.fhhagenberg.sqe.mo.model.Floor;
+import at.fhhagenberg.sqe.mo.viewcontroller.IBuildingViewController;
+import at.fhhagenberg.sqe.mo.viewcontroller.IBuildingViewControllerDelegate;
 import com.google.common.collect.ImmutableList;
 import java.rmi.RemoteException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
+import java.util.Set;
 import sqelevator.IElevator;
 
-public class ElevatorControlCenter {
-
-  private static final Logger LOGGER = Logger.getLogger(ElevatorControlCenter.class.getName());
+public class ElevatorControlCenter implements IBuildingViewControllerDelegate {
 
   private IElevator elevatorApi = null;
+
   private Building building;
 
-  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+  private IBuildingViewController buildingViewController;
 
   private ElevatorControlCenter() {
     // no-op empty constructor
@@ -29,6 +28,11 @@ public class ElevatorControlCenter {
 
   public ElevatorControlCenter(IElevator elevatorApi) {
     this.elevatorApi = elevatorApi;
+  }
+
+  public void setBuildingViewController(IBuildingViewController buildingViewController) {
+    this.buildingViewController = buildingViewController;
+    this.buildingViewController.setDelegate(this);
   }
 
   public Building getBuilding() {
@@ -39,26 +43,7 @@ public class ElevatorControlCenter {
     this.building = building;
   }
 
-  public void startPolling() {
-    scheduler.scheduleAtFixedRate(
-        () -> {
-          try {
-            pollElevatorApi();
-          } catch (RemoteException detail) {
-            LOGGER.severe(detail.getMessage());
-          } catch (DesynchronizationException detail) {
-            LOGGER.warning(detail.getMessage());
-          }
-        },
-        5,
-        5,
-        TimeUnit.SECONDS);
-  }
-
-  public void stopPolling() {
-    scheduler.shutdown();
-  }
-
+  @Override
   public void pollElevatorApi() throws DesynchronizationException, RemoteException {
     long startClockTick = elevatorApi.getClockTick();
     int numberOfFloors = elevatorApi.getFloorNum();
@@ -70,6 +55,9 @@ public class ElevatorControlCenter {
         building = new Building(floors, elevators);
       } else {
         building.update(floors, elevators);
+      }
+      if (buildingViewController != null) {
+        buildingViewController.update(building);
       }
     } else {
       throw new DesynchronizationException(
@@ -95,7 +83,7 @@ public class ElevatorControlCenter {
     int numberOfElevators = elevatorApi.getElevatorNum();
     for (int elevatorId = 0; elevatorId < numberOfElevators; elevatorId++) {
       Map<Integer, Boolean> buttons = new HashMap<>();
-      Map<Integer, Boolean> servicedFloors = new HashMap<>();
+      Set<Integer> servicedFloors = new HashSet<>();
       for (int floorId = 0; floorId < numberOfFloors; floorId++) {
         if (elevatorApi.getElevatorButton(elevatorId, floorId)) {
           buttons.put(floorId, true);
@@ -103,9 +91,7 @@ public class ElevatorControlCenter {
           buttons.put(floorId, false);
         }
         if (elevatorApi.getServicesFloors(elevatorId, floorId)) {
-          servicedFloors.put(floorId, true);
-        } else {
-          servicedFloors.put(floorId, false);
+          servicedFloors.add(floorId);
         }
       }
 
@@ -124,5 +110,26 @@ public class ElevatorControlCenter {
               elevatorApi.getTarget(elevatorId)));
     }
     return elevatorsBuilder.build();
+  }
+
+  @Override
+  public void didSetCommittedDirection(int elevatorNumber, int direction) {
+    try {
+      elevatorApi.setCommittedDirection(elevatorNumber, direction);
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void didSetServicesFloors(int elevatorNumber, int floor, boolean service) {}
+
+  @Override
+  public void didSetTarget(int elevatorId, int target) {
+    try {
+      elevatorApi.setTarget(elevatorId, target);
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    }
   }
 }

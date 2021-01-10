@@ -1,6 +1,7 @@
 package at.fhhagenberg.sqe.mo.model;
 
 import java.util.Map;
+import java.util.Set;
 
 public class Elevator {
 
@@ -12,7 +13,7 @@ public class Elevator {
   private final int speed;
   private final int weight;
   private final Map<Integer, Boolean> buttons;
-  private final Map<Integer, Boolean> servicedFloors;
+  private final Set<Integer> servicedFloors;
   private int committedDirection;
   private int target;
 
@@ -26,7 +27,7 @@ public class Elevator {
       int speed,
       int weight,
       Map<Integer, Boolean> buttons,
-      Map<Integer, Boolean> servicedFloors,
+      Set<Integer> servicedFloors,
       int target) {
 
     this.committedDirection = committedDirection;
@@ -78,7 +79,7 @@ public class Elevator {
     return buttons;
   }
 
-  public Map<Integer, Boolean> getServicedFloors() {
+  public Set<Integer> getServicedFloors() {
     return servicedFloors;
   }
 
@@ -91,7 +92,9 @@ public class Elevator {
   }
 
   public void setServicesFloors(int floor, boolean service) {
-    servicedFloors.put(floor, service);
+    if (service) {
+      servicedFloors.add(floor);
+    }
   }
 
   public void setTarget(int target) {
