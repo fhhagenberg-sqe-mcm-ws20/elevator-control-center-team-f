@@ -112,6 +112,7 @@ public class BuildingView implements IBuildingView {
   private HBox initModeSelectionElements() {
     Label modeLabel = new Label("Mode: ");
     manualModeRadioButton = new RadioButton("Manual");
+    manualModeRadioButton.setId("manualModeRadioButton");
     autoModeRadioButton = new RadioButton("Auto");
     modeToggleGroup = new ToggleGroup();
     manualModeRadioButton.setToggleGroup(modeToggleGroup);
@@ -137,6 +138,7 @@ public class BuildingView implements IBuildingView {
         event ->
             delegate.didTargetChange(
                 elevatorId, targetComboBox.getSelectionModel().getSelectedItem()));
+    targetComboBox.setId("targetComboBox");
 
     // Check the mode logic
     targetComboBox.setDisable(delegate.isAutoModeEnabled());
@@ -147,6 +149,7 @@ public class BuildingView implements IBuildingView {
 
     // Elevator info labels
     Label targetFloorLabel = new Label(delegate.getElevatorTarget(elevatorId));
+    targetFloorLabel.setId("targetFloorLabel");
     Label speedLabel = new Label(delegate.getElevatorSpeed(elevatorId));
     Label doorStatusLabel = new Label(delegate.getElevatorDoorStatus(elevatorId));
     Label currentPayloadLabel = new Label(delegate.getElevatorWeight(elevatorId));
@@ -155,6 +158,7 @@ public class BuildingView implements IBuildingView {
     // Elevator current floor and direction
     Label currentFloorLabel = new Label(delegate.getElevatorFloor(elevatorId));
     Label currentDirectionLabel = new Label(delegate.getElevatorCommittedDirection(elevatorId));
+    currentDirectionLabel.setId("currentDirectionLabel-" + elevatorId);
     HBox currentFloorAndDirectionHBox = new HBox(currentFloorLabel, currentDirectionLabel);
     currentFloorAndDirectionHBox.setAlignment(Pos.CENTER);
 
@@ -170,6 +174,7 @@ public class BuildingView implements IBuildingView {
         elevatorButtonLabel.setMinSize(25, 25);
         elevatorButtonLabel.setStyle(delegate.getElevatorButtonStyle(elevatorId, floor));
         elevatorButtonLabel.setAlignment(Pos.CENTER);
+        elevatorButtonLabel.setId("e"+elevatorId+"-floor"+floor);
         elevatorButtonsGridPane.add(elevatorButtonLabel, x, y);
       }
     }

@@ -95,6 +95,9 @@ public class Elevator {
     if (service) {
       servicedFloors.add(floor);
     }
+    else {
+      servicedFloors.remove(floor);
+    }
   }
 
   public void setTarget(int target) {

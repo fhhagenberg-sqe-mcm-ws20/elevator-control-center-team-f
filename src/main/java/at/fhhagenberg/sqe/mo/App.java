@@ -4,19 +4,26 @@ import at.fhhagenberg.sqe.mo.view.BuildingView;
 import at.fhhagenberg.sqe.mo.viewcontroller.BuildingViewController;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import sqelevator.IElevator;
 
 /** JavaFX App */
 public class App extends Application {
 
+  private final ElevatorControlCenter ecc;
+
+  public App() {
+    super();
+    IElevator elevatorApi = new BuildingSimulation();
+    ecc = new ElevatorControlCenter(elevatorApi);
+  }
+
+  public App(ElevatorControlCenter ecc) {
+    super();
+    this.ecc = ecc;
+  }
+
   @Override
   public void start(Stage stage) {
-
-    // Mock api
-    BuildingSimulation elevatorApiSimulation = new BuildingSimulation();
-
-    // Create control center
-    ElevatorControlCenter ecc = new ElevatorControlCenter(elevatorApiSimulation);
-
     // Create building view controller
     BuildingViewController buildingViewController =
         new BuildingViewController(new BuildingView(), ecc.getBuilding());

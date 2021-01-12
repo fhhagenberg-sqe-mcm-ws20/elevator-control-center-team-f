@@ -6,8 +6,12 @@ import at.fhhagenberg.sqe.mo.view.BuildingView;
 import at.fhhagenberg.sqe.mo.view.IBuildingViewDelegate;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javafx.application.Platform;
 
 public class BuildingViewController implements IBuildingViewController, IBuildingViewDelegate {
 
@@ -55,14 +59,14 @@ public class BuildingViewController implements IBuildingViewController, IBuildin
   public List<String> getElevatorServicedFloors(int elevatorId) {
     return building.getElevators().get(elevatorId).getServicedFloors().stream()
         .sequential()
-        .map(floorId -> String.format("Floor %s", floorId))
+        .map(floorId -> String.format("Floor-%s", floorId))
         .collect(Collectors.toList());
   }
 
   @Override
   public void didTargetChange(int elevatorId, String targetStr) {
     int currentFloor = building.getElevators().get(elevatorId).getFloor();
-    int target = Integer.parseInt(targetStr.split(" ")[1]);
+    int target = Integer.parseInt(targetStr.split("-")[1]);
     // up=0, down=1 and uncommitted=2
     int committedDirection;
     if (target > currentFloor) {
@@ -196,18 +200,17 @@ public class BuildingViewController implements IBuildingViewController, IBuildin
   }
 
   public void startService() {
-    poll();
-    //    // init an executor service for periodic polling
-    //    ScheduledExecutorService executor =
-    //        Executors.newScheduledThreadPool(
-    //            1,
-    //            runnable -> {
-    //              Thread t = new Thread(runnable);
-    //              t.setDaemon(true);
-    //              return t;
-    //            });
-    //    Runnable loop = () -> Platform.runLater(this::poll);
-    //    executor.scheduleAtFixedRate(loop, 0, 2, TimeUnit.SECONDS);
+    // init an executor service for periodic polling
+    ScheduledExecutorService executor =
+        Executors.newScheduledThreadPool(
+            1,
+            runnable -> {
+              Thread t = new Thread(runnable);
+              t.setDaemon(true);
+              return t;
+            });
+    Runnable loop = () -> Platform.runLater(this::poll);
+    executor.scheduleAtFixedRate(loop, 0, 3, TimeUnit.SECONDS);
   }
 
   private void poll() {
