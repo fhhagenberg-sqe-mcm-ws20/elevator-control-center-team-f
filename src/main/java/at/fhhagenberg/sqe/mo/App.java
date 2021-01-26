@@ -2,6 +2,10 @@ package at.fhhagenberg.sqe.mo;
 
 import at.fhhagenberg.sqe.mo.view.BuildingView;
 import at.fhhagenberg.sqe.mo.viewcontroller.BuildingViewController;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import sqelevator.IElevator;
@@ -11,10 +15,10 @@ public class App extends Application {
 
   private final ElevatorControlCenter ecc;
 
-  public App() {
+  public App() throws RemoteException, NotBoundException, MalformedURLException {
     super();
-    IElevator elevatorApi = new BuildingSimulation();
-    ecc = new ElevatorControlCenter(elevatorApi);
+    IElevator api = (IElevator) Naming.lookup("rmi://127.0.0.1/ElevatorSim");
+    ecc = new ElevatorControlCenter(api);
   }
 
   public App(ElevatorControlCenter ecc) {
