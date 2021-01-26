@@ -1,17 +1,11 @@
 package at.fhhagenberg.sqe.mo.viewcontroller;
 
-import at.fhhagenberg.sqe.mo.DesynchronizationException;
 import at.fhhagenberg.sqe.mo.model.Building;
 import at.fhhagenberg.sqe.mo.view.BuildingView;
 import at.fhhagenberg.sqe.mo.view.IBuildingViewDelegate;
-import java.rmi.RemoteException;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javafx.application.Platform;
 
 public class BuildingViewController implements IBuildingViewController, IBuildingViewDelegate {
 
@@ -79,7 +73,6 @@ public class BuildingViewController implements IBuildingViewController, IBuildin
 
     delegate.didSetTarget(elevatorId, target);
     delegate.didSetCommittedDirection(elevatorId, committedDirection);
-    poll();
   }
 
   @Override
@@ -198,29 +191,5 @@ public class BuildingViewController implements IBuildingViewController, IBuildin
 
   private boolean doesElevatorTargetFloor(int elevatorId, int floor) {
     return building.getElevators().get(elevatorId).getTarget() == floor;
-  }
-
-  public void startService() {
-    // init an executor service for periodic polling
-    ScheduledExecutorService executor =
-        Executors.newScheduledThreadPool(
-            1,
-            runnable -> {
-              Thread t = new Thread(runnable);
-              t.setDaemon(true);
-              return t;
-            });
-    Runnable loop = () -> Platform.runLater(this::poll);
-    executor.scheduleAtFixedRate(loop, 0, 3, TimeUnit.SECONDS);
-  }
-
-  private void poll() {
-    if (delegate != null) {
-      try {
-        delegate.pollElevatorApi();
-      } catch (DesynchronizationException | RemoteException e) {
-        e.printStackTrace();
-      }
-    }
   }
 }
