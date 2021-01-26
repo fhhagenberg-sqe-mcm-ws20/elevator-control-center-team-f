@@ -170,7 +170,7 @@ public class BuildingView implements IBuildingView {
     for (int y = 0; y < row; y++) {
       for (int x = 0; x < column; x++) {
         int floor = (row * column - 2 * y - 2) + x;
-        Label elevatorButtonLabel = new Label(Integer.toString(floor));
+        Label elevatorButtonLabel = new Label(Integer.toString(floor + 1));
         elevatorButtonLabel.setMinSize(25, 25);
         elevatorButtonLabel.setStyle(delegate.getElevatorButtonStyle(elevatorId, floor));
         elevatorButtonLabel.setAlignment(Pos.CENTER);

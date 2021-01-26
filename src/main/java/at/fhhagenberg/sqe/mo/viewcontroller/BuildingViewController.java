@@ -59,14 +59,14 @@ public class BuildingViewController implements IBuildingViewController, IBuildin
   public List<String> getElevatorServicedFloors(int elevatorId) {
     return building.getElevators().get(elevatorId).getServicedFloors().stream()
         .sequential()
-        .map(floorId -> String.format("Floor-%s", floorId))
+        .map(floorId -> String.format("Floor-%s", floorId + 1))
         .collect(Collectors.toList());
   }
 
   @Override
   public void didTargetChange(int elevatorId, String targetStr) {
     int currentFloor = building.getElevators().get(elevatorId).getFloor();
-    int target = Integer.parseInt(targetStr.split("-")[1]);
+    int target = Integer.parseInt(targetStr.split("-")[1]) - 1;
     // up=0, down=1 and uncommitted=2
     int committedDirection;
     if (target > currentFloor) {
@@ -89,7 +89,8 @@ public class BuildingViewController implements IBuildingViewController, IBuildin
 
   @Override
   public String getElevatorTarget(int elevatorId) {
-    return String.format("Target floor: %s", building.getElevators().get(elevatorId).getTarget());
+    return String.format(
+        "Target floor: %s", building.getElevators().get(elevatorId).getTarget() + 1);
   }
 
   @Override
@@ -106,7 +107,7 @@ public class BuildingViewController implements IBuildingViewController, IBuildin
       case 2:
         return "Door status: Closed";
       default:
-        return "-";
+        return "Door status: -";
     }
   }
 
@@ -123,7 +124,7 @@ public class BuildingViewController implements IBuildingViewController, IBuildin
 
   @Override
   public String getElevatorFloor(int elevatorId) {
-    return Integer.toString(building.getElevators().get(elevatorId).getFloor());
+    return Integer.toString(building.getElevators().get(elevatorId).getFloor() + 1);
   }
 
   @Override
