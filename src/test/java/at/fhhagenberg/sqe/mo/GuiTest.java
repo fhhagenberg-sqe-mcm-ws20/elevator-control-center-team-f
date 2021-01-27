@@ -32,10 +32,9 @@ public class GuiTest {
   void testSettingTargetOnGuiChangesValueOnApi(FxRobot robot) throws RemoteException {
     verifyPolling(robot);
     robot.clickOn("#manualModeRadioButton");
-    robot.clickOn("#targetComboBox");
-    robot.clickOn("Floor-2");
+    robot.clickOn("#e0-floor2");
 
-    assertEquals(1, elevatorApiMock.getTarget(0));
+    assertEquals(2, elevatorApiMock.getTarget(0));
   }
 
   @Test
