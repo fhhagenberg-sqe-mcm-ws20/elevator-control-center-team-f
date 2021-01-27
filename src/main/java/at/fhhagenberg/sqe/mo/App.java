@@ -67,12 +67,10 @@ public class App extends Application {
                   () -> {
                     try {
                       ecc.pollElevatorApi();
-                    } catch (DesynchronizationException | RemoteException exception) {
-                      if (exception instanceof RemoteException) {
-                        //  TODO show it to user
-                      } else {
-                        // just do nothing for the desynchronization
-                      }
+                    } catch (DesynchronizationException e) {
+                      // do nothing
+                    } catch (RemoteException e) {
+                      // TODO create an alarm dialog
                     }
                   });
 
