@@ -10,7 +10,7 @@ public interface IBuildingViewDelegate {
 
   List<String> getElevatorServicedFloors(int elevatorId);
 
-  void didTargetChange(int elevatorId, String target);
+  void didTargetChange(int elevatorId, int target);
 
   boolean isAutoModeEnabled();
 

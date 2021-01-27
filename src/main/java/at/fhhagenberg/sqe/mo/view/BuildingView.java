@@ -129,24 +129,6 @@ public class BuildingView implements IBuildingView {
   }
 
   private VBox initElevator(int elevatorId) {
-    // Elevator target selection for manual mode
-    Label selectTargetFloorLabel = new Label("Select target:");
-    ComboBox<String> targetComboBox =
-        new ComboBox<>(
-            FXCollections.observableArrayList(delegate.getElevatorServicedFloors(elevatorId)));
-    targetComboBox.setOnAction(
-        event ->
-            delegate.didTargetChange(
-                elevatorId, targetComboBox.getSelectionModel().getSelectedItem()));
-    targetComboBox.setId("targetComboBox");
-
-    // Check the mode logic
-    targetComboBox.setDisable(delegate.isAutoModeEnabled());
-
-    HBox selectTargetHBox = new HBox(selectTargetFloorLabel, targetComboBox);
-    selectTargetHBox.setSpacing(2);
-    selectTargetHBox.setAlignment(Pos.CENTER);
-
     // Elevator info labels
     Label targetFloorLabel = new Label(delegate.getElevatorTarget(elevatorId));
     targetFloorLabel.setId("targetFloorLabel");
@@ -171,6 +153,7 @@ public class BuildingView implements IBuildingView {
       for (int x = 0; x < column; x++) {
         int floor = (row * column - 2 * y - 2) + x;
         Label elevatorButtonLabel = new Label(Integer.toString(floor + 1));
+        elevatorButtonLabel.setOnMouseClicked(event -> delegate.didTargetChange(elevatorId, floor));
         elevatorButtonLabel.setMinSize(25, 25);
         elevatorButtonLabel.setStyle(delegate.getElevatorButtonStyle(elevatorId, floor));
         elevatorButtonLabel.setAlignment(Pos.CENTER);
@@ -182,7 +165,6 @@ public class BuildingView implements IBuildingView {
 
     VBox elevatorInfoVBox =
         new VBox(
-            selectTargetHBox,
             targetFloorLabel,
             speedLabel,
             doorStatusLabel,

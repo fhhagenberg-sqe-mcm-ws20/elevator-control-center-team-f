@@ -58,9 +58,8 @@ public class BuildingViewController implements IBuildingViewController, IBuildin
   }
 
   @Override
-  public void didTargetChange(int elevatorId, String targetStr) {
+  public void didTargetChange(int elevatorId, int target) {
     int currentFloor = building.getElevators().get(elevatorId).getFloor();
-    int target = Integer.parseInt(targetStr.split("-")[1]) - 1;
     // up=0, down=1 and uncommitted=2
     int committedDirection;
     if (target > currentFloor) {
