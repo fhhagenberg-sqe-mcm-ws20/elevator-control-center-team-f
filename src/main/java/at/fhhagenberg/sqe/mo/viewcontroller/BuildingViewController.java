@@ -50,14 +50,6 @@ public class BuildingViewController implements IBuildingViewController, IBuildin
   }
 
   @Override
-  public List<String> getElevatorServicedFloors(int elevatorId) {
-    return building.getElevators().get(elevatorId).getServicedFloors().stream()
-        .sequential()
-        .map(floorId -> String.format("Floor-%s", floorId + 1))
-        .collect(Collectors.toList());
-  }
-
-  @Override
   public void didTargetChange(int elevatorId, int target) {
     int currentFloor = building.getElevators().get(elevatorId).getFloor();
     // up=0, down=1 and uncommitted=2

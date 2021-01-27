@@ -7,8 +7,6 @@ public interface IBuildingViewControllerDelegate {
 
   void didSetCommittedDirection(int elevatorNumber, int direction);
 
-  void didSetServicesFloors(int elevatorNumber, int floor, boolean service);
-
   void didSetTarget(int elevatorId, int target);
 
   void pollElevatorApi() throws DesynchronizationException, RemoteException;

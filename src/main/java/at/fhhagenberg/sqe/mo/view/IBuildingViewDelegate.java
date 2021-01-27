@@ -8,8 +8,6 @@ public interface IBuildingViewDelegate {
 
   int getNumberOfElevators();
 
-  List<String> getElevatorServicedFloors(int elevatorId);
-
   void didTargetChange(int elevatorId, int target);
 
   boolean isAutoModeEnabled();

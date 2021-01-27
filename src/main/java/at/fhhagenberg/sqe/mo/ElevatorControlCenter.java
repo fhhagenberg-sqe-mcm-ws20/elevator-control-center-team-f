@@ -122,9 +122,6 @@ public class ElevatorControlCenter implements IBuildingViewControllerDelegate {
   }
 
   @Override
-  public void didSetServicesFloors(int elevatorNumber, int floor, boolean service) {}
-
-  @Override
   public void didSetTarget(int elevatorId, int target) {
     try {
       elevatorApi.setTarget(elevatorId, target);
