@@ -11,6 +11,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import sqelevator.IElevator;
 
@@ -67,10 +69,12 @@ public class App extends Application {
                   () -> {
                     try {
                       ecc.pollElevatorApi();
-                    } catch (DesynchronizationException e) {
+                    } catch (RemoteException remoteException) {
+                      Alert alert = new Alert(AlertType.ERROR);
+                      alert.setContentText(remoteException.getLocalizedMessage());
+                      alert.show();
+                    } catch (DesynchronizationException desynchronizationException) {
                       // do nothing
-                    } catch (RemoteException e) {
-                      // TODO create an alarm dialog
                     }
                   });
 
