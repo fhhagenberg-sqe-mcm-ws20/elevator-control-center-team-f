@@ -19,15 +19,18 @@ public class App extends Application {
 
   private final ElevatorControlCenter ecc;
 
+  private boolean testing = false;
+
   public App() throws RemoteException, NotBoundException, MalformedURLException {
     super();
     IElevator api = (IElevator) Naming.lookup("rmi://127.0.0.1/ElevatorSim");
     ecc = new ElevatorControlCenter(api);
   }
 
-  public App(ElevatorControlCenter ecc) {
+  public App(ElevatorControlCenter ecc, boolean testing) {
     super();
     this.ecc = ecc;
+    this.testing = testing;
   }
 
   @Override
@@ -46,33 +49,35 @@ public class App extends Application {
     stage.sizeToScene();
     stage.show();
 
-    // Create an executor service for periodic polling
-    ScheduledExecutorService executor =
-        Executors.newScheduledThreadPool(
-            1,
-            runnable -> {
-              Thread t = new Thread(runnable);
-              t.setDaemon(true);
-              return t;
-            });
+    if (!testing) {
+      // Create an executor service for periodic polling
+      ScheduledExecutorService executor =
+          Executors.newScheduledThreadPool(
+              1,
+              runnable -> {
+                Thread t = new Thread(runnable);
+                t.setDaemon(true);
+                return t;
+              });
 
-    // Define the polling loop thread
-    Runnable pollingLoop =
-        () ->
-            Platform.runLater(
-                () -> {
-                  try {
-                    ecc.pollElevatorApi();
-                  } catch (DesynchronizationException | RemoteException exception) {
-                    if (exception instanceof RemoteException) {
-                      //  TODO show it to user
-                    } else {
-                      // just do nothing for the desynchronization
+      // Define the polling loop thread
+      Runnable pollingLoop =
+          () ->
+              Platform.runLater(
+                  () -> {
+                    try {
+                      ecc.pollElevatorApi();
+                    } catch (DesynchronizationException | RemoteException exception) {
+                      if (exception instanceof RemoteException) {
+                        //  TODO show it to user
+                      } else {
+                        // just do nothing for the desynchronization
+                      }
                     }
-                  }
-                });
+                  });
 
-    executor.scheduleAtFixedRate(pollingLoop, 0, 200, TimeUnit.MILLISECONDS);
+      executor.scheduleAtFixedRate(pollingLoop, 0, 200, TimeUnit.MILLISECONDS);
+    }
   }
 
   public static void main(String[] args) {

@@ -174,7 +174,7 @@ public class BuildingView implements IBuildingView {
         elevatorButtonLabel.setMinSize(25, 25);
         elevatorButtonLabel.setStyle(delegate.getElevatorButtonStyle(elevatorId, floor));
         elevatorButtonLabel.setAlignment(Pos.CENTER);
-        elevatorButtonLabel.setId("e"+elevatorId+"-floor"+floor);
+        elevatorButtonLabel.setId("e" + elevatorId + "-floor" + floor);
         elevatorButtonsGridPane.add(elevatorButtonLabel, x, y);
       }
     }

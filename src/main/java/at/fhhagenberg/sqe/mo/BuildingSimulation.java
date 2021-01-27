@@ -2,59 +2,37 @@ package at.fhhagenberg.sqe.mo;
 
 import at.fhhagenberg.sqe.mo.model.Elevator;
 import at.fhhagenberg.sqe.mo.model.Floor;
+import com.google.common.collect.ImmutableList;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import sqelevator.IElevator;
 
 public class BuildingSimulation implements IElevator {
 
-  private static final int NUMBER_OF_ELEVATORS = 3;
-  private static final int NUMBER_OF_FLOORS = 6;
+  private static final int NUMBER_OF_ELEVATORS = 2;
+  private static final int NUMBER_OF_FLOORS = 4;
   private static final int FLOOR_HEIGHT = 5;
 
-  private List<Floor> floors;
-  private List<Elevator> elevators;
-
-  private static final Random random = new Random();
+  private final List<Floor> floors;
+  private final List<Elevator> elevators;
 
   public BuildingSimulation() {
-    simulate();
-    //    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    //    scheduler.scheduleAtFixedRate(this::simulate, 0, 10, TimeUnit.SECONDS);
-  }
+    floors =
+        ImmutableList.of(
+            new Floor(false, false, FLOOR_HEIGHT),
+            new Floor(false, true, FLOOR_HEIGHT),
+            new Floor(true, false, FLOOR_HEIGHT),
+            new Floor(true, true, FLOOR_HEIGHT));
 
-  private void simulate() {
-    List<Floor> floors = new ArrayList<>();
-    for (int i = 0; i < NUMBER_OF_FLOORS; i++) {
-      floors.add(new Floor(random.nextBoolean(), random.nextBoolean(), FLOOR_HEIGHT));
-    }
-
-    List<Elevator> elevators = new ArrayList<>();
-    for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
-      int target = randomFloor(floors);
-      elevators.add(
-          new Elevator(
-              random.nextInt(3),
-              random.nextInt(6),
-              random.nextInt(9) + 2,
-              random.nextInt(2) + 1,
-              random.nextInt(NUMBER_OF_FLOORS),
-              0,
-              random.nextInt(11),
-              random.nextInt(11) * 80,
-              getButtons(floors, target),
-              randomServicedFloors(floors, target),
-              target));
-    }
-
-    this.floors = floors;
-    this.elevators = elevators;
+    elevators =
+        ImmutableList.of(
+            new Elevator(0, 1, 8, 2, 0, 0, 5, 100, getButtons(floors, 1), getServicedFloors(), 1),
+            new Elevator(1, 1, 8, 2, 1, 1, 5, 100, getButtons(floors, 0), getServicedFloors(), 0),
+            new Elevator(2, 0, 8, 1, 2, 2, 5, 100, getButtons(floors, 2), getServicedFloors(), 2));
   }
 
   private Map<Integer, Boolean> getButtons(List<Floor> floors, int target) {
@@ -65,20 +43,12 @@ public class BuildingSimulation implements IElevator {
     return buttons;
   }
 
-  private Set<Integer> randomServicedFloors(List<Floor> floors, int target) {
+  private Set<Integer> getServicedFloors() {
     Set<Integer> servicedFloors = new HashSet<>();
-    for (int floor = 0; floor < floors.size(); floor++) {
-      servicedFloors.add(floor);
-    }
-    int floor = random.nextInt(floors.size());
-    if (floor != target && random.nextBoolean()) {
-      servicedFloors.remove(floor);
-    }
+    servicedFloors.add(0);
+    servicedFloors.add(1);
+    servicedFloors.add(2);
     return servicedFloors;
-  }
-
-  private int randomFloor(List<Floor> floors) {
-    return random.nextInt(floors.size());
   }
 
   @Override
