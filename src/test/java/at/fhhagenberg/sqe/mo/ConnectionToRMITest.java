@@ -17,7 +17,7 @@ import org.testfx.framework.junit5.Start;
 import sqelevator.IElevator;
 
 @ExtendWith(ApplicationExtension.class)
-public class ConnectionToRMITest {
+class ConnectionToRMITest {
 
   private static Registry registry;
   private static final String processName = "ElevatorSim";
@@ -27,7 +27,7 @@ public class ConnectionToRMITest {
   private static App app;
 
   @BeforeAll
-  public static void setUp() throws RemoteException, AlreadyBoundException {
+  static void setUp() throws RemoteException, AlreadyBoundException {
     IElevator elevatorApiMock = new BuildingSimulation();
     registry = LocateRegistry.createRegistry(port);
     registry.bind(processName, elevatorApiMock);
@@ -35,7 +35,7 @@ public class ConnectionToRMITest {
   }
 
   @Start
-  public void start(Stage stage) {
+  void start(Stage stage) {
     app.start(stage);
   }
 

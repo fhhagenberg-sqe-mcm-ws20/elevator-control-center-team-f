@@ -15,13 +15,13 @@ import org.testfx.framework.junit5.Start;
 import sqelevator.IElevator;
 
 @ExtendWith(ApplicationExtension.class)
-public class GuiTest {
+class GuiTest {
 
   private IElevator elevatorApiMock;
   private ElevatorControlCenter ecc;
 
   @Start
-  public void start(Stage stage) {
+  void start(Stage stage) {
     elevatorApiMock = new BuildingSimulation();
     ecc = new ElevatorControlCenter(elevatorApiMock);
     App app = new App(ecc);

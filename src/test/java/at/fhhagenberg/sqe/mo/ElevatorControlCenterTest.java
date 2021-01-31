@@ -17,7 +17,7 @@ import java.rmi.RemoteException;
 import org.junit.jupiter.api.Test;
 import sqelevator.IElevator;
 
-public class ElevatorControlCenterTest {
+class ElevatorControlCenterTest {
 
   @Test
   void testElevatorDirection() throws RemoteException, DesynchronizationException {

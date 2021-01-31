@@ -15,10 +15,26 @@
     <sonar.organization>fhhagenberg-sqe-mcm-ws20</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.projectName>mo-elevator</sonar.projectName>
-    <sonar.coverage.exclusions>**/at/fhhagenberg/sqe/mo/App.java</sonar.coverage.exclusions>
+    <sonar.coverage.exclusions>
+      **/at/fhhagenberg/sqe/mo/App.java,
+      **/sqelevator/*
+    </sonar.coverage.exclusions>
   </properties>
 
   <dependencies>
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.14.0</version>
+    </dependency>
+
+    <!-- JavaFX -->
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>

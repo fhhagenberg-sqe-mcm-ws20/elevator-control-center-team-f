@@ -14,17 +14,21 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import sqelevator.IElevator;
 
 /** JavaFX App */
 public class App extends Application {
+
+  private static final Logger logger = LogManager.getLogger(App.class);
 
   private String rmiConnectionString = "rmi://127.0.0.1/ElevatorSim";
   private ElevatorControlCenter ecc;
   private boolean testing = false;
   private boolean connected = false;
 
-  public App() throws InterruptedException, RemoteException {
+  public App() throws RemoteException {
     super();
     connectToApi();
   }
@@ -97,12 +101,12 @@ public class App extends Application {
   public void retryConnecting() {
     try {
       connectToApi();
-    } catch (InterruptedException | RemoteException e) {
-      e.printStackTrace();
+    } catch (RemoteException remoteException) {
+      logger.error("RemoteException: ", remoteException);
     }
   }
 
-  private void connectToApi() throws InterruptedException, RemoteException {
+  private void connectToApi() throws RemoteException {
     connected = false;
     int trial = 0;
     while (!connected && trial != 3) {
@@ -111,8 +115,7 @@ public class App extends Application {
         IElevator api = (IElevator) Naming.lookup(rmiConnectionString);
         ecc = new ElevatorControlCenter(api);
         connected = true;
-      } catch (RemoteException | NotBoundException | MalformedURLException exception) {
-        Thread.sleep(1000);
+      } catch (RemoteException | NotBoundException | MalformedURLException ignored) {
       }
     }
     if (!connected) {

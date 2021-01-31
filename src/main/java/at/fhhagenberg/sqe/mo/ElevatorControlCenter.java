@@ -12,9 +12,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import sqelevator.IElevator;
 
 public class ElevatorControlCenter implements IBuildingViewControllerDelegate {
+
+  private static final Logger logger = LogManager.getLogger(ElevatorControlCenter.class);
 
   private IElevator elevatorApi = null;
 
@@ -116,8 +120,8 @@ public class ElevatorControlCenter implements IBuildingViewControllerDelegate {
   public void didSetCommittedDirection(int elevatorNumber, int direction) {
     try {
       elevatorApi.setCommittedDirection(elevatorNumber, direction);
-    } catch (RemoteException e) {
-      e.printStackTrace();
+    } catch (RemoteException remoteException) {
+      logger.error("RemoteException: ", remoteException);
     }
   }
 
@@ -125,8 +129,8 @@ public class ElevatorControlCenter implements IBuildingViewControllerDelegate {
   public void didSetTarget(int elevatorId, int target) {
     try {
       elevatorApi.setTarget(elevatorId, target);
-    } catch (RemoteException e) {
-      e.printStackTrace();
+    } catch (RemoteException remoteException) {
+      logger.error("RemoteException: ", remoteException);
     }
   }
 }
