@@ -24,7 +24,7 @@ public class GuiTest {
   public void start(Stage stage) {
     elevatorApiMock = new BuildingSimulation();
     ecc = new ElevatorControlCenter(elevatorApiMock);
-    App app = new App(ecc, true);
+    App app = new App(ecc);
     app.start(stage);
   }
 

@@ -19,20 +19,27 @@ import sqelevator.IElevator;
 /** JavaFX App */
 public class App extends Application {
 
-  private final ElevatorControlCenter ecc;
-
+  private String rmiConnectionString = "rmi://127.0.0.1/ElevatorSim";
+  private ElevatorControlCenter ecc;
   private boolean testing = false;
+  private boolean connected = false;
 
-  public App() throws RemoteException, NotBoundException, MalformedURLException {
+  public App() throws InterruptedException, RemoteException {
     super();
-    IElevator api = (IElevator) Naming.lookup("rmi://127.0.0.1/ElevatorSim");
-    ecc = new ElevatorControlCenter(api);
+    connectToApi();
   }
 
-  public App(ElevatorControlCenter ecc, boolean testing) {
+  public App(IElevator apiMock, String rmiConnectionString) {
+    super();
+    this.rmiConnectionString = rmiConnectionString;
+    ecc = new ElevatorControlCenter(apiMock);
+    connected = true;
+  }
+
+  public App(ElevatorControlCenter ecc) {
     super();
     this.ecc = ecc;
-    this.testing = testing;
+    this.testing = true;
   }
 
   @Override
@@ -73,12 +80,43 @@ public class App extends Application {
                       Alert alert = new Alert(AlertType.ERROR);
                       alert.setContentText(remoteException.getLocalizedMessage());
                       alert.show();
+                      retryConnecting();
                     } catch (DesynchronizationException desynchronizationException) {
-                      // do nothing
+                      // silence
                     }
                   });
 
       executor.scheduleAtFixedRate(pollingLoop, 0, 200, TimeUnit.MILLISECONDS);
+    }
+  }
+
+  public boolean isConnected() {
+    return connected;
+  }
+
+  public void retryConnecting() {
+    try {
+      connectToApi();
+    } catch (InterruptedException | RemoteException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void connectToApi() throws InterruptedException, RemoteException {
+    connected = false;
+    int trial = 0;
+    while (!connected && trial != 3) {
+      trial++;
+      try {
+        IElevator api = (IElevator) Naming.lookup(rmiConnectionString);
+        ecc = new ElevatorControlCenter(api);
+        connected = true;
+      } catch (RemoteException | NotBoundException | MalformedURLException exception) {
+        Thread.sleep(1000);
+      }
+    }
+    if (!connected) {
+      throw new RemoteException();
     }
   }
 

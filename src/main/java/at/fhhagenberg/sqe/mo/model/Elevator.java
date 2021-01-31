@@ -94,8 +94,7 @@ public class Elevator {
   public void setServicesFloors(int floor, boolean service) {
     if (service) {
       servicedFloors.add(floor);
-    }
-    else {
+    } else {
       servicedFloors.remove(floor);
     }
   }
