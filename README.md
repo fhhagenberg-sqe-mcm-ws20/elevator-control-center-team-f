@@ -1,6 +1,18 @@
+[![Build](https://github.com/fhhagenberg-sqe-mcm-ws20/elevator-control-center-team-f/workflows/Build/badge.svg)](https://github.com/fhhagenberg-sqe-mcm-ws20/elevator-control-center-team-f/workflows/Build/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fhhagenberg-sqe-mcm-ws20_elevator-control-center-team-f&metric=alert_status)](https://sonarcloud.io/dashboard?id=fhhagenberg-sqe-mcm-ws20_elevator-control-center-team-f)
 
-# Graphical User Interface with JavaFx
+# Elevator Control Center - Team F
+
+## How to run without IDE
+1. Download the `jar` file from the release [here](https://github.com/fhhagenberg-sqe-mcm-ws20/elevator-control-center-team-f/releases/tag/1.0.0)
+2. Make sure you have your elevator simulator is running 
+3. Open or create a scenario and run the simulation
+3. Click on the `jar` file to open the `mo-elevator` control system
+4. You can see the elevator data on the application
+5. You can press on an elevator button and observe the elevator on your simulation
+
+
+## How to run with IDE and Maven
 
 ### Prerequisites
 
@@ -30,7 +42,7 @@ This maven project is already set up for JavaFx based GUI applications. It also 
 	- Either run it in your IDE
 	- Via command line, run it with `mvn clean javafx:run`.
 
-You can build your project with maven with
+You can build the project with maven using following command
 
 ```
 mvn clean package
