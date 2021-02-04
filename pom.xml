@@ -5,7 +5,7 @@
 
   <groupId>at.fhhagenberg.sqe.mo</groupId>
   <artifactId>mo-elevator</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
